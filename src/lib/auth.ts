@@ -8,6 +8,27 @@ export const auth = betterAuth({
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
 
+  trustedOrigins: [process.env.BETTER_AUTH_URL!],
+
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "User",
+        required: false,
+      },
+      phone: {
+        type: "string",
+        required: false,
+      },
+      status: {
+        type: "string",
+        defaultValue: "Active",
+        required: false,
+      },
+    },
+  },
+
   emailAndPassword: {
     enabled: true,
   },
