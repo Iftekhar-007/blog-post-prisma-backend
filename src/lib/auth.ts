@@ -1,9 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import nodemailer from 'nodemailer'
-// If your Prisma file is located elsewhere, you can change the path
-
+import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -47,25 +45,18 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
 
-
   emailVerification: {
-    sendVerificationEmail: async ( { user, url, token }, request) => {
-      // void sendEmail({
-      //   to: user.email,
-      //   subject: "Verify your email address",
-      //   text: `Click the link to verify your email: ${url}`,
-      // });
-
-      // console.log(user,url,token);
-
-      const verificationUrl = `${process.env.BETTER_AUTH_URL}/verify-email?token=${token}`
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      const verificationUrl = `${process.env.BETTER_AUTH_URL}/verify-email?token=${token}`;
 
       const info = await transporter.sendMail({
-    from: '"blog post backend" <maddison53@ethereal.email>',
-    to: user.email,
-    subject: "Hello ✔",
-    text: "Hello world?", // Plain-text version of the message
-     html: `
+        from: '"blog post backend" <maddison53@ethereal.email>',
+        to: user.email,
+        subject: "Hello ✔",
+        text: "Hello world?", // Plain-text version of the message
+        html: `
   <div style="font-family: Arial, Helvetica, sans-serif; background-color: #f6f6f6; padding: 30px;">
     <div style="max-width: 520px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px;">
       
@@ -118,9 +109,18 @@ export const auth = betterAuth({
     </div>
   </div>
   `, // HTML version of the message
-  });
+      });
 
-  console.log("Message sent:", info.messageId);
+      console.log("Message sent:", info.messageId);
+    },
+  },
+
+  socialProviders: {
+    google: {
+      prompt: "select_account consent",
+      accessType: "offline",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
 });
