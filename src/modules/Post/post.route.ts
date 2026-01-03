@@ -1,6 +1,6 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import { postController } from "./post.controller";
-import { auth } from "../../lib/auth";
+
 import authMiddle, { userRole } from "../../middleware/auth";
 
 const router = express.Router();
