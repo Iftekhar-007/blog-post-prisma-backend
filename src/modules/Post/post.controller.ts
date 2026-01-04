@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { postServices } from "./post.service";
 import { boolean, string } from "better-auth/*";
+import { PostStatus } from "../../../generated/prisma/enums";
 
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -28,10 +29,17 @@ const getAllPost = async (req: Request, res: Response) => {
     const isFeatued = req.query.isFeatued
       ? req.query.isFeatued === "true"
       : undefined;
+
+    const status = req.query.status as PostStatus | undefined;
+
+    const authorId = req.query.authorId as string | undefined;
+
     const result = await postServices.getAllPost({
       search: searchStr,
       tags,
       isFeatued,
+      status,
+      authorId,
     });
     res.status(201).json(result);
   } catch (err) {
