@@ -1,4 +1,5 @@
 import { Post } from "../../../generated/prisma/client";
+import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 
 const createPost = async (
@@ -18,37 +19,48 @@ const createPost = async (
 const getAllPost = async (payload: {
   search: string | undefined;
   tags: string[];
+  isFeatued: boolean | undefined;
 }) => {
-  const result = await prisma.post.findMany({
-    where: {
-      AND: [
+  const andOptions: PostWhereInput[] = [];
+
+  if (payload.search) {
+    andOptions.push({
+      OR: [
         {
-          OR: [
-            {
-              title: {
-                contains: payload.search as string,
-                mode: "insensitive",
-              },
-            },
-            {
-              content: {
-                contains: payload.search as string,
-                mode: "insensitive",
-              },
-            },
-            {
-              tags: {
-                has: payload.search as string,
-              },
-            },
-          ],
+          title: {
+            contains: payload.search as string,
+            mode: "insensitive",
+          },
+        },
+        {
+          content: {
+            contains: payload.search as string,
+            mode: "insensitive",
+          },
         },
         {
           tags: {
-            hasEvery: payload.tags as string[],
+            has: payload.search as string,
           },
         },
       ],
+    });
+  }
+
+  if (payload.tags.length > 0) {
+    andOptions.push({
+      tags: {
+        hasEvery: payload.tags as string[],
+      },
+    });
+  }
+
+  if (typeof payload.isFeatued === "boolean") {
+    andOptions.push({ isFeatued: payload.isFeatued });
+  }
+  const result = await prisma.post.findMany({
+    where: {
+      AND: andOptions,
     },
   });
 

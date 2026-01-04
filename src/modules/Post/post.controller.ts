@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { postServices } from "./post.service";
-import { string } from "better-auth/*";
+import { boolean, string } from "better-auth/*";
 
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -24,7 +24,15 @@ const getAllPost = async (req: Request, res: Response) => {
     const searchStr = typeof search === "string" ? search : undefined;
 
     const tags = req.query.tags ? (req.query.tags as string).split(",") : [];
-    const result = await postServices.getAllPost({ search: searchStr, tags });
+
+    const isFeatued = req.query.isFeatued
+      ? req.query.isFeatued === "true"
+      : undefined;
+    const result = await postServices.getAllPost({
+      search: searchStr,
+      tags,
+      isFeatued,
+    });
     res.status(201).json(result);
   } catch (err) {
     res.status(500).json({ error: "error", details: err });
