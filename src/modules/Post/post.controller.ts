@@ -34,9 +34,19 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const authorId = req.query.authorId as string | undefined;
 
-    const pageNumber: number = parseInt(req.query.pageNumber as string) || 1;
+    const pageNumber: number = req.query.pageNumber
+      ? Number(req.query.pageNumber)
+      : 1;
 
-    const limitNumber = parseInt(req.query.limitNumber as string) || 5;
+    const limitNumber: number = req.query.limitNumber
+      ? Number(req.query.limitNumber)
+      : 5;
+
+    const skip: number = (pageNumber - 1) * limitNumber;
+
+    const sortBy = req.query.sortBy as string | undefined;
+
+    const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
 
     const result = await postServices.getAllPost({
       search: searchStr,
@@ -46,8 +56,11 @@ const getAllPost = async (req: Request, res: Response) => {
       authorId,
       pageNumber,
       limitNumber,
+      skip,
+      sortBy,
+      sortOrder,
     });
-    res.status(201).json(result);
+    res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ error: "error", details: err });
   }
