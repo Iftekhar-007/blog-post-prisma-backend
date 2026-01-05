@@ -4,8 +4,8 @@ import { userRole } from "../middleware/auth";
 const seedAdmin = async () => {
   try {
     const adminData = {
-      name: "shawon the admin",
-      email: "shawon@admin.com",
+      name: "shawon the admin boss!!!!!!",
+      email: "shawon3@admin.com",
       password: "admin1234",
       role: userRole.ADMIN,
       phone: "12233445",
@@ -29,8 +29,17 @@ const seedAdmin = async () => {
         body: JSON.stringify(adminData),
       }
     );
+
+    // console.log(signUpAdmin);
+
+    if (signUpAdmin.ok) {
+      await prisma.user.updateMany({
+        where: { email: adminData.email },
+        data: { emailVerified: true },
+      });
+    }
   } catch (err: any) {
-    throw new Error("error is occured", err);
+    throw new Error(err.message || "failed to create admin user");
   }
 };
 
