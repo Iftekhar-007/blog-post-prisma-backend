@@ -34,12 +34,18 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const authorId = req.query.authorId as string | undefined;
 
+    const pageNumber: number = parseInt(req.query.pageNumber as string) || 1;
+
+    const limitNumber = parseInt(req.query.limitNumber as string) || 5;
+
     const result = await postServices.getAllPost({
       search: searchStr,
       tags,
       isFeatued,
       status,
       authorId,
+      pageNumber,
+      limitNumber,
     });
     res.status(201).json(result);
   } catch (err) {

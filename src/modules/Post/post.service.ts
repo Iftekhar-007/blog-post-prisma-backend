@@ -22,6 +22,8 @@ const getAllPost = async (payload: {
   isFeatued: boolean | undefined;
   status: PostStatus | undefined;
   authorId: string | undefined;
+  pageNumber: number;
+  limitNumber: number;
 }) => {
   const andOptions: PostWhereInput[] = [];
 
@@ -67,7 +69,7 @@ const getAllPost = async (payload: {
 
   if (payload.authorId) {
     andOptions.push({
-      authorId: { contains: payload.authorId, mode: "insensitive" },
+      authorId: { contains: payload.authorId },
     });
   }
 
