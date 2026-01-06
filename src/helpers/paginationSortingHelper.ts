@@ -6,11 +6,11 @@ type IOptions = {
 };
 
 type IOptionsResult = {
-  pageNumber?: number;
-  limitNumber?: number;
+  pageNumber: number;
+  limitNumber: number;
   skip: number;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  sortBy: string;
+  sortOrder: "asc" | "desc";
 };
 
 const paginationSortingHelper = (options: IOptions): IOptionsResult => {

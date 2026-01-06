@@ -35,27 +35,8 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const authorId = req.query.authorId as string | undefined;
 
-    // const pageNumber: number = req.query.pageNumber
-    //   ? Number(req.query.pageNumber)
-    //   : 1;
-
-    // const limitNumber: number = req.query.limitNumber
-    //   ? Number(req.query.limitNumber)
-    //   : 5;
-
-    // const skip: number = (pageNumber - 1) * limitNumber;
-
-    // const sortBy = req.query.sortBy as string | undefined;
-
-    // const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
-
-    const {
-      pageNumber = 1,
-      limitNumber = 10,
-      skip,
-      sortBy,
-      sortOrder,
-    } = paginationSortingHelper(req.query);
+    const { pageNumber, limitNumber, skip, sortBy, sortOrder } =
+      paginationSortingHelper(req.query);
 
     const result = await postServices.getAllPost({
       search: searchStr,
@@ -75,7 +56,20 @@ const getAllPost = async (req: Request, res: Response) => {
   }
 };
 
+const getPostById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const result = await postServices.getPostById(id as string);
+
+    res.status(200).json(result);
+  } catch (err: any) {
+    throw new Error("error occured", err);
+  }
+};
+
 export const postController = {
   createPost,
   getAllPost,
+  getPostById,
 };
