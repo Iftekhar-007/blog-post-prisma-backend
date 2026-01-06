@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { postServices } from "./post.service";
 import { boolean, string } from "better-auth/*";
 import { PostStatus } from "../../../generated/prisma/enums";
+import paginationSortingHelper from "../../helpers/paginationSortingHelper";
 
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -34,19 +35,27 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const authorId = req.query.authorId as string | undefined;
 
-    const pageNumber: number = req.query.pageNumber
-      ? Number(req.query.pageNumber)
-      : 1;
+    // const pageNumber: number = req.query.pageNumber
+    //   ? Number(req.query.pageNumber)
+    //   : 1;
 
-    const limitNumber: number = req.query.limitNumber
-      ? Number(req.query.limitNumber)
-      : 5;
+    // const limitNumber: number = req.query.limitNumber
+    //   ? Number(req.query.limitNumber)
+    //   : 5;
 
-    const skip: number = (pageNumber - 1) * limitNumber;
+    // const skip: number = (pageNumber - 1) * limitNumber;
 
-    const sortBy = req.query.sortBy as string | undefined;
+    // const sortBy = req.query.sortBy as string | undefined;
 
-    const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
+    // const sortOrder = req.query.sortOrder as "asc" | "desc" | undefined;
+
+    const {
+      pageNumber = 1,
+      limitNumber = 10,
+      skip,
+      sortBy,
+      sortOrder,
+    } = paginationSortingHelper(req.query);
 
     const result = await postServices.getAllPost({
       search: searchStr,
