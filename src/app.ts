@@ -18,7 +18,6 @@ app.use(express.json());
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 // ! post routes
-
 app.use("/api/v1/posts", postRoute);
 
 // ! comment routes
