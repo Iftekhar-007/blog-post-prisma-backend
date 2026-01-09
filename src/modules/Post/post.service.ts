@@ -127,12 +127,23 @@ const getPostById = async (id: string) => {
           where: {
             parentId: null,
           },
+          orderBy: {
+            createdAt: "desc",
+          },
           include: {
             comments: {
               include: {
                 comments: true,
               },
+              orderBy: {
+                createdAt: "desc",
+              },
             },
+          },
+        },
+        _count: {
+          select: {
+            comments: true,
           },
         },
       },
