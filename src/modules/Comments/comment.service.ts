@@ -27,6 +27,52 @@ const createComment = async (payload: {
   return result;
 };
 
+const getCommentById = async (commentId: string) => {
+  const result = await prisma.comment.findUnique({
+    where: {
+      id: commentId,
+    },
+    include: {
+      post: {
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          thumbnail: true,
+          views: true,
+          authorId: true,
+        },
+      },
+    },
+  });
+
+  return result;
+};
+
+const getCommentByAuthorId = async (authorId: string) => {
+  const result = await prisma.comment.findMany({
+    where: {
+      authorId,
+    },
+    include: {
+      post: {
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          thumbnail: true,
+          views: true,
+          authorId: true,
+        },
+      },
+    },
+  });
+
+  return result;
+};
+
 export const commentService = {
   createComment,
+  getCommentById,
+  getCommentByAuthorId,
 };
