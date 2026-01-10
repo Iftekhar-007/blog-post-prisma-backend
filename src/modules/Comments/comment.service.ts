@@ -121,7 +121,33 @@ const updateComment = async (
     },
     data: {
       content: data.content,
-      status: data.commentStatus,
+      status: data.commentStatus as CommentStatus,
+    },
+  });
+
+  return result;
+};
+
+const modearetComment = async (
+  commentId: string,
+  data: { status: CommentStatus }
+) => {
+  const confirmData = await prisma.comment.findUnique({
+    where: {
+      id: commentId,
+    },
+  });
+
+  if (!confirmData) {
+    throw new Error("Comment not found with this id");
+  }
+
+  const result = await prisma.comment.update({
+    where: {
+      id: commentId,
+    },
+    data: {
+      status: data.status as CommentStatus,
     },
   });
 
@@ -134,4 +160,5 @@ export const commentService = {
   getCommentByAuthorId,
   deleteComment,
   updateComment,
+  modearetComment,
 };

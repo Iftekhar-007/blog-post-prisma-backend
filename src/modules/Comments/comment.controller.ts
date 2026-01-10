@@ -96,10 +96,31 @@ const updateComment = async (req: Request, res: Response) => {
   }
 };
 
+const modearetComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+
+    const result = await commentService.modearetComment(
+      commentId as string,
+      req.body
+    );
+
+    res.status(200).json({
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 export const commentController = {
   createComment,
   getCommentById,
   getCommentByAuthorId,
   deleteComment,
   updateComment,
+  modearetComment,
 };
