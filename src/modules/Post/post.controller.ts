@@ -64,6 +64,21 @@ const getPostById = async (req: Request, res: Response) => {
 
     res.status(200).json(result);
   } catch (err: any) {
+    console.log(err.message);
+    throw new Error("error occured", err);
+  }
+};
+
+const getMyPosts = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    const result = await postServices.getMyPosts(user?.id as string);
+
+    res.status(200).json({
+      data: result,
+    });
+  } catch (err: any) {
     throw new Error("error occured", err);
   }
 };
@@ -72,4 +87,5 @@ export const postController = {
   createPost,
   getAllPost,
   getPostById,
+  getMyPosts,
 };

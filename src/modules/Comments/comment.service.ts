@@ -140,6 +140,8 @@ const modearetComment = async (
 
   if (!confirmData) {
     throw new Error("Comment not found with this id");
+  } else if (confirmData.status === data.status) {
+    throw new Error(`Status is already ${data.status}`);
   }
 
   const result = await prisma.comment.update({

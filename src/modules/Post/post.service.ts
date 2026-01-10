@@ -116,9 +116,9 @@ const getAllPost = async (payload: {
 
 const getPostById = async (id: string) => {
   const result = await prisma.$transaction(async (tx) => {
-    const updateViewCount = await tx.post.update({
+    await tx.post.update({
       where: {
-        id: id,
+        id,
       },
       data: {
         views: {
@@ -162,10 +162,39 @@ const getPostById = async (id: string) => {
   return result;
 };
 
+const getMyPosts = async (userId: string) => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+      status: "Active",
+    },
+    select: {
+      id: true,
+    },
+  });
+  const result = await prisma.post.findMany({
+    where: {
+      authorId: userId,
+    },
+  });
+
+  const total = await prisma.post.aggregate({
+    _count: {
+      id: true,
+    },
+    where: {
+      authorId: userId,
+    },
+  });
+
+  return { data: result, total };
+};
+
 export const postServices = {
   createPost,
   getAllPost,
   getPostById,
+  getMyPosts,
 };
 
 // test comment
