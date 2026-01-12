@@ -13,6 +13,8 @@ router.get(
   postController.getMyPosts
 );
 
+router.get("/stats", authMiddle(userRole.ADMIN), postController.statsCount);
+
 router.get("/:id", postController.getPostById);
 
 router.post("/", authMiddle(userRole.User), postController.createPost);

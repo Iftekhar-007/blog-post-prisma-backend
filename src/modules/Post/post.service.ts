@@ -244,6 +244,66 @@ const deletePost = async (userId: string, postId: string, isAdmin: boolean) => {
   });
 };
 
+const statsCount = async () => {
+  // const postsCount = await prisma.post.count();
+
+  // const publishedCont = await prisma.post.count({
+  //   where: { status: "Published" },
+  // });
+
+  // const draftCount = await prisma.post.count({ where: { status: "Draft" } });
+
+  // const archivedCount = await prisma.post.count({
+  //   where: { status: "Archived" },
+  // });
+
+  // const commentCount = await prisma.comment.count();
+
+  // const rejectCommentCount = await prisma.comment.count({
+  //   where: { status: "Reject" },
+  // });
+
+  // const approvedCommentCount = await prisma.comment.count({
+  //   where: { status: "Approved" },
+  // });
+
+  const statCounts = await prisma.$transaction(async (tnx) => {
+    const postsCount = await tnx.post.count();
+
+    const publishedCont = await tnx.post.count({
+      where: { status: "Published" },
+    });
+
+    const draftCount = await tnx.post.count({ where: { status: "Draft" } });
+
+    const archivedCount = await tnx.post.count({
+      where: { status: "Archived" },
+    });
+
+    const commentCount = await tnx.comment.count();
+
+    const rejectCommentCount = await tnx.comment.count({
+      where: { status: "Reject" },
+    });
+
+    const approvedCommentCount = await tnx.comment.count({
+      where: { status: "Approved" },
+    });
+
+    return {
+      postsCount,
+      publishedCont,
+      draftCount,
+      archivedCount,
+      commentCount,
+      rejectCommentCount,
+      approvedCommentCount,
+    };
+  });
+
+  return statCounts;
+};
+
 export const postServices = {
   createPost,
   getAllPost,
@@ -251,6 +311,7 @@ export const postServices = {
   getMyPosts,
   updateMyPost,
   deletePost,
+  statsCount,
 };
 
 // test comment
