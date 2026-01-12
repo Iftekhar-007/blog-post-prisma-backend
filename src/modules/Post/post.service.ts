@@ -290,6 +290,8 @@ const statsCount = async () => {
       where: { status: "Approved" },
     });
 
+    const totalViews = await tnx.post.aggregate({ _sum: { views: true } });
+
     return {
       postsCount,
       publishedCont,
@@ -298,6 +300,7 @@ const statsCount = async () => {
       commentCount,
       rejectCommentCount,
       approvedCommentCount,
+      totalViews: totalViews._sum.views,
     };
   });
 
