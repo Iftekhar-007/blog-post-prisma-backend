@@ -193,7 +193,8 @@ const getMyPosts = async (userId: string) => {
 const updateMyPost = async (
   userId: string,
   postId: string,
-  data: Partial<Post>
+  data: Partial<Post>,
+  isAdmin: boolean
 ) => {
   const confirmPost = await prisma.post.findUniqueOrThrow({
     where: {
@@ -205,8 +206,12 @@ const updateMyPost = async (
     throw new Error("post not found");
   }
 
-  if (confirmPost.authorId !== userId) {
+  if (!isAdmin && confirmPost.authorId !== userId) {
     throw new Error("You can't edit another persons post!");
+  }
+
+  if (!isAdmin) {
+    delete data.isFeatued;
   }
 
   return await prisma.post.update({
@@ -217,12 +222,35 @@ const updateMyPost = async (
   });
 };
 
+const deletePost = async (userId: string, postId: string, isAdmin: boolean) => {
+  const confirmPost = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: postId,
+    },
+  });
+
+  if (!confirmPost) {
+    throw new Error("post not found");
+  }
+
+  if (!isAdmin && confirmPost.authorId !== userId) {
+    throw new Error("Only Admin and user can delete their own post!!");
+  }
+
+  return await prisma.post.delete({
+    where: {
+      id: postId,
+    },
+  });
+};
+
 export const postServices = {
   createPost,
   getAllPost,
   getPostById,
   getMyPosts,
   updateMyPost,
+  deletePost,
 };
 
 // test comment

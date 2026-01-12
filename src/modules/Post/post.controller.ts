@@ -3,6 +3,7 @@ import { postServices } from "./post.service";
 import { boolean, string } from "better-auth/*";
 import { PostStatus } from "../../../generated/prisma/enums";
 import paginationSortingHelper from "../../helpers/paginationSortingHelper";
+import { userRole } from "../../middleware/auth";
 
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -89,10 +90,37 @@ const updateMyPost = async (req: Request, res: Response) => {
 
     const { postId } = req.params;
 
+    const isAdmin = req.user?.role === userRole.ADMIN;
+
     const result = await postServices.updateMyPost(
       userId as string,
       postId as string,
-      req.body
+      req.body,
+      isAdmin
+    );
+
+    res.status(200).json({
+      data: result,
+    });
+  } catch (err: any) {
+    throw new Error("error occured", err);
+  }
+};
+
+const deletePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    const userId = user?.id;
+
+    const { postId } = req.params;
+
+    const isAdmin = user?.role === userRole.ADMIN;
+
+    const result = await postServices.deletePost(
+      userId as string,
+      postId as string,
+      isAdmin as boolean
     );
 
     res.status(200).json({
@@ -109,4 +137,5 @@ export const postController = {
   getPostById,
   getMyPosts,
   updateMyPost,
+  deletePost,
 };
