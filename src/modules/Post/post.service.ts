@@ -190,11 +190,39 @@ const getMyPosts = async (userId: string) => {
   return { data: result, total };
 };
 
+const updateMyPost = async (
+  userId: string,
+  postId: string,
+  data: Partial<Post>
+) => {
+  const confirmPost = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: postId,
+    },
+  });
+
+  if (!confirmPost) {
+    throw new Error("post not found");
+  }
+
+  if (confirmPost.authorId !== userId) {
+    throw new Error("You can't edit another persons post!");
+  }
+
+  return await prisma.post.update({
+    where: {
+      id: confirmPost.id,
+    },
+    data,
+  });
+};
+
 export const postServices = {
   createPost,
   getAllPost,
   getPostById,
   getMyPosts,
+  updateMyPost,
 };
 
 // test comment

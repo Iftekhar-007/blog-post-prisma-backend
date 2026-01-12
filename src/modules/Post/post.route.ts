@@ -5,8 +5,6 @@ import authMiddle, { userRole } from "../../middleware/auth";
 
 const router = express.Router();
 
-router.post("/", authMiddle(userRole.User), postController.createPost);
-
 router.get("/", postController.getAllPost);
 
 router.get(
@@ -16,5 +14,13 @@ router.get(
 );
 
 router.get("/:id", postController.getPostById);
+
+router.post("/", authMiddle(userRole.User), postController.createPost);
+
+router.patch(
+  "/:postId",
+  authMiddle(userRole.User),
+  postController.updateMyPost
+);
 
 export const postRoute = router;
