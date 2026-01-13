@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { postServices } from "./post.service";
 import { boolean, string } from "better-auth/*";
 import { PostStatus } from "../../../generated/prisma/enums";
 import paginationSortingHelper from "../../helpers/paginationSortingHelper";
 import { userRole } from "../../middleware/auth";
 
-const createPost = async (req: Request, res: Response) => {
+const createPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.user;
     if (!user) {
@@ -17,7 +17,7 @@ const createPost = async (req: Request, res: Response) => {
     const result = await postServices.createPost(req.body, user.id as string);
     res.status(201).json(result);
   } catch (error) {
-    res.status(500).json({ error: "error", details: error });
+    next(error);
   }
 };
 
@@ -84,7 +84,11 @@ const getMyPosts = async (req: Request, res: Response) => {
   }
 };
 
-const updateMyPost = async (req: Request, res: Response) => {
+const updateMyPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.user?.id;
 
@@ -103,7 +107,7 @@ const updateMyPost = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    throw new Error("error occured", err);
+    next(err);
   }
 };
 
