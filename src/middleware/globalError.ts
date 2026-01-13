@@ -35,6 +35,10 @@ function errorHandler(
       errorMessage =
         "Can't reach database server at {database_host}:{database_port} Please make sure your database server is running at {database_host}:{database_port}.";
     }
+  } else if (err instanceof Prisma.PrismaClientRustPanicError) {
+    errStatus = 1001;
+    errorMessage =
+      "Can't reach database server at {database_host}:{database_port} Please make sure your database server is running at {database_host}:{database_port}.";
   }
 
   res.status(errStatus);
