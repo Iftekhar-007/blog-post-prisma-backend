@@ -11,9 +11,12 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.BETTER_AUTH_URL || "http://localhost:5000",
+    origin: [
+      "http://localhost:3000",
+      process.env.BETTER_AUTH_URL || "http://localhost:5000",
+    ],
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 

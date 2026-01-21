@@ -18,7 +18,9 @@ export const auth = betterAuth({
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
 
-  trustedOrigins: [process.env.BETTER_AUTH_URL!],
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:5000",
+
+  trustedOrigins: [process.env.BETTER_AUTH_TRUSTED_ORIGINS!],
 
   user: {
     additionalFields: {
