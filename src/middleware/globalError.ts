@@ -5,7 +5,7 @@ function errorHandler(
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   let errStatus = 500;
   let errorMessage = "Internal Server Error!";
@@ -13,7 +13,7 @@ function errorHandler(
 
   if (err instanceof Prisma.PrismaClientValidationError) {
     errStatus = 400;
-    errorMessage = "You inputed wring type data or wrong info";
+    errorMessage = "You inputed wrong type data or wrong info";
   } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if ((err.code = "P2001")) {
       errStatus = 400;
