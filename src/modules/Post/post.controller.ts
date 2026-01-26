@@ -87,7 +87,7 @@ const getMyPosts = async (req: Request, res: Response) => {
 const updateMyPost = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const userId = req.user?.id;
@@ -100,7 +100,7 @@ const updateMyPost = async (
       userId as string,
       postId as string,
       req.body,
-      isAdmin
+      isAdmin,
     );
 
     res.status(200).json({
@@ -124,7 +124,7 @@ const deletePost = async (req: Request, res: Response) => {
     const result = await postServices.deletePost(
       userId as string,
       postId as string,
-      isAdmin as boolean
+      isAdmin as boolean,
     );
 
     res.status(200).json({
