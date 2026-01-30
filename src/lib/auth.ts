@@ -50,9 +50,10 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
+    redirectTo: "http://localhost:3000/dashboard",
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      const verificationUrl = `${process.env.BETTER_AUTH_URL}/verify-email?token=${token}`;
-
+      const verificationUrl = `${process.env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${process.env.BETTER_AUTH_TRUSTED_ORIGINS}/dashboard`;
+      // const verificationUrl = url;
       const info = await transporter.sendMail({
         from: '"blog post backend" <maddison53@ethereal.email>',
         to: user.email,
